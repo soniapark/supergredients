@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Supergredients — 원재료까지 다 읽는, 깨끗한 장바구니</title>
+<link rel="stylesheet" as="style" crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  body {
+    font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
+    color: #1a1a1a;
+  }
+  a { text-decoration: none; color: inherit; cursor: pointer; }
+  button { font-family: inherit; }
+
+  /* ===== Nav ===== */
+  .sg-nav {
+    position: sticky; top: 0; z-index: 50;
+    background: #ffffff; border-bottom: 1px solid #1a1a1a;
+  }
+  .sg-nav-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: clamp(14px, 2vw, 20px) clamp(20px, 4vw, 40px);
+  }
+  .sg-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; letter-spacing: -0.03em;
+    font-size: clamp(16px, 2.2vw, 20px);
+  }
+  .sg-brand-dot {
+    display: inline-block; width: 20px; height: 20px;
+    border-radius: 50%; background: #c5a8d9;
+  }
+  .sg-nav-links {
+    display: flex; gap: 28px; font-weight: 500; font-size: 14px;
+  }
+  .sg-nav-cta {
+    background: #1a1a1a; color: #ffffff; border: none;
+    padding: 11px 18px; font-weight: 600; font-size: 13px;
+    cursor: pointer; border-radius: 999px;
+  }
+  .sg-nav-burger {
+    background: transparent; border: 1px solid #1a1a1a;
+    width: 40px; height: 40px; border-radius: 999px; cursor: pointer; padding: 0;
+    display: none; flex-direction: column; justify-content: center; align-items: center; gap: 4px;
+  }
+  .sg-nav-burger span {
+    width: 16px; height: 1.5px; background: #1a1a1a;
+  }
+  .sg-nav-mobile {
+    display: none; border-top: 1px solid #1a1a1a;
+    padding: 16px 20px; flex-direction: column; gap: 14px;
+    font-size: 16px; font-weight: 500;
+  }
+  .sg-nav-mobile.open { display: flex; }
+  .sg-nav-mobile button {
+    margin-top: 8px; background: #1a1a1a; color: #ffffff; border: none;
+    padding: 12px 18px; font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 999px;
+  }
+  @media (max-width: 768px) {
+    .sg-nav-links, .sg-nav-cta-wrap { display: none !important; }
+    .sg-nav-burger { display: flex !important; }
+  }
+
+  /* ===== Hero ===== */
+  .sg-hero {
+    position: relative; overflow: hidden; min-height: 70vh;
+    padding: clamp(48px, 8vw, 96px) clamp(20px, 4vw, 40px) clamp(64px, 10vw, 120px);
+  }
+  .sg-hero-wanderers { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+  @media (max-width: 768px) { .sg-hero-wanderers { display: none; } }
+  .sg-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #d4c5e8; padding: 7px 14px;
+    font-size: 12px; font-weight: 500; margin-bottom: 36px;
+    position: relative; z-index: 2; border-radius: 999px;
+  }
+  .sg-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #1a1a1a; }
+  .sg-h1 {
+    font-size: clamp(44px, 9vw, 128px); font-weight: 700;
+    letter-spacing: -0.04em; line-height: 1.0; margin: 0;
+    position: relative; z-index: 2; text-wrap: balance;
+  }
+  .sg-h1-accent { color: #7aa8c4; }
+  .sg-hero-bottom {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-top: clamp(32px, 5vw, 56px); gap: 32px;
+    position: relative; z-index: 2; flex-wrap: wrap;
+  }
+  .sg-hero-lead {
+    font-size: clamp(15px, 1.6vw, 18px); line-height: 1.55;
+    max-width: 480px; margin: 0; color: #3a3a3a;
+  }
+  .sg-hero-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+  .sg-btn-primary {
+    background: #1a1a1a; color: #ffffff; border: none;
+    padding: 14px 22px; font-weight: 600; font-size: 14px;
+    cursor: pointer; border-radius: 999px;
+  }
+  .sg-btn-ghost {
+    background: transparent; color: #1a1a1a; border: 1px solid #1a1a1a;
+    padding: 14px 22px; font-weight: 600; font-size: 14px;
+    cursor: pointer; border-radius: 999px;
+  }
+
+  /* Wanderer base */
+  .sg-wander {
+    position: absolute; pointer-events: none; z-index: 3;
+    transform-origin: center center;
+  }
+
+  /* ===== Sections ===== */
+  .sg-section {
+    padding: clamp(48px, 7vw, 96px) clamp(20px, 4vw, 40px);
+    background: #ffffff;
+  }
+  .sg-section + .sg-section,
+  .sg-section.bordered { border-top: 1px solid #e8e5df; }
+  .sg-container { max-width: 1400px; margin: 0 auto; }
+  .sg-kicker {
+    font-size: 13px; font-weight: 500; color: #5a5a5a; margin-bottom: 12px;
+  }
+  .sg-h2 {
+    font-size: clamp(32px, 5.5vw, 72px); font-weight: 700;
+    letter-spacing: -0.035em; line-height: 1.02; margin: 0;
+    text-wrap: balance;
+  }
+  .sg-h2-accent-1 { color: #5a3a7a; }
+  .sg-h2-accent-2 { color: #1f4458; }
+
+  /* ===== Categories ===== */
+  .sg-cats-header { margin-bottom: clamp(32px, 4vw, 56px); }
+  .sg-cats-count { font-size: 14px; color: #5a5a5a; margin-top: 14px; }
+  .sg-cats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: clamp(12px, 1.5vw, 20px);
+  }
+  .sg-cat {
+    padding: clamp(24px, 3vw, 36px); min-height: 220px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 24px;
+    cursor: pointer; transition: transform 0.25s ease;
+    border-radius: 4px;
+  }
+  .sg-cat:hover { transform: translateY(-4px); }
+  .sg-cat-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .sg-cat-num { font-size: 13px; font-weight: 500; opacity: 0.7; }
+  .sg-cat-count {
+    font-size: 13px; font-weight: 500;
+    background: rgba(255,255,255,0.45); padding: 4px 10px; border-radius: 999px;
+  }
+  .sg-cat-label {
+    font-size: clamp(22px, 2.5vw, 30px); font-weight: 700;
+    letter-spacing: -0.025em; margin-bottom: 8px;
+  }
+  .sg-cat-sub { font-size: 13px; opacity: 0.75; line-height: 1.5; }
+
+  /* ===== Featured ===== */
+  .sg-feat-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 20px; margin-bottom: clamp(40px, 5vw, 64px);
+  }
+  .sg-link-underline {
+    font-size: 14px; border-bottom: 1px solid #1a1a1a; padding-bottom: 2px; font-weight: 500;
+  }
+  .sg-themes { display: flex; flex-direction: column; gap: clamp(56px, 7vw, 88px); }
+  .sg-theme-header {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .sg-theme-tag { font-size: 13px; font-weight: 500; letter-spacing: 0.02em; }
+  .sg-theme-title {
+    font-size: clamp(22px, 2.6vw, 32px); font-weight: 700;
+    letter-spacing: -0.025em; margin: 0; line-height: 1.2;
+  }
+  .sg-theme-more {
+    font-size: 13px; color: #5a5a5a; margin-left: auto; font-weight: 500;
+  }
+  .sg-products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+    gap: clamp(16px, 2vw, 24px);
+  }
+  .sg-product { cursor: pointer; display: flex; flex-direction: column; gap: 14px; }
+  .sg-product-shot {
+    aspect-ratio: 1 / 1.1; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; font-size: 12px; color: rgba(0,0,0,0.4); font-weight: 500;
+  }
+  .sg-product-shot img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .sg-product-badge {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    background: rgba(255,255,255,0.92); color: #1a1a1a;
+    font-size: 11px; font-weight: 600; letter-spacing: -0.01em;
+    padding: 4px 9px; border-radius: 999px;
+  }
+  .sg-product-name {
+    font-size: 17px; font-weight: 600; letter-spacing: -0.015em;
+    margin-bottom: 6px; text-wrap: balance; line-height: 1.3;
+  }
+  .sg-product-ing { font-size: 13px; color: #5a5a5a; line-height: 1.5; }
+
+  /* ===== Manifesto ===== */
+  .sg-manifesto { background: #d4c5e8; }
+  .sg-manifesto .sg-container { max-width: 1100px; }
+  .sg-manifesto .sg-kicker { color: #3a2a5a; }
+  .sg-manifesto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+    gap: clamp(20px, 3vw, 32px);
+    margin-top: clamp(32px, 4vw, 48px);
+  }
+  .sg-manifesto-card {
+    padding: 28px 24px;
+    background: rgba(255,255,255,0.55); border-radius: 4px;
+  }
+  .sg-manifesto-num {
+    font-size: 40px; font-weight: 700; letter-spacing: -0.04em;
+    margin-bottom: 14px; line-height: 1; color: #5a3a7a;
+  }
+  .sg-manifesto-title {
+    font-size: 19px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 10px;
+  }
+  .sg-manifesto-desc { font-size: 14px; line-height: 1.6; color: #3a3a3a; margin: 0; }
+
+  /* ===== Elementica ===== */
+  .sg-elementica { background: #cfe2ec; }
+  .sg-elementica .sg-kicker { color: #1f4458; }
+  .sg-elem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+  .sg-elem-h2 {
+    font-size: clamp(32px, 5vw, 68px); font-weight: 700;
+    letter-spacing: -0.035em; line-height: 1.05;
+    margin: 0 0 24px; text-wrap: balance;
+  }
+  .sg-elem-lead {
+    font-size: clamp(15px, 1.6vw, 17px); line-height: 1.6;
+    color: #1f3a48; max-width: 520px; margin: 0 0 28px;
+  }
+  .sg-elem-stats {
+    display: flex; gap: clamp(20px, 3vw, 40px);
+    margin-bottom: 32px; flex-wrap: wrap;
+  }
+  .sg-elem-stat-num {
+    font-size: clamp(36px, 4vw, 52px); font-weight: 700;
+    letter-spacing: -0.04em; color: #1f4458; line-height: 1;
+  }
+  .sg-elem-stat-label {
+    font-size: 13px; color: #1f4458; margin-top: 6px; font-weight: 500;
+  }
+  .sg-elem-card {
+    background: #ffffff; padding: clamp(24px, 3vw, 40px); min-height: 420px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    border-radius: 4px;
+  }
+  .sg-elem-card-meta { font-size: 13px; color: #5a5a5a; font-weight: 500; }
+  .sg-elem-card-shot {
+    flex: 1; margin: 20px 0; min-height: 180px;
+    background: #e4d8ea;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: rgba(0,0,0,0.4); border-radius: 4px;
+  }
+  .sg-elem-card-title {
+    font-size: clamp(22px, 2.5vw, 28px); font-weight: 700; letter-spacing: -0.025em;
+  }
+  .sg-elem-card-sub {
+    font-size: 13px; color: #5a5a5a; margin-top: 8px; line-height: 1.6;
+  }
+
+  /* ===== Footer ===== */
+  .sg-footer {
+    padding: clamp(40px, 5vw, 64px) clamp(20px, 4vw, 40px) clamp(28px, 3vw, 40px);
+    background: #ffffff; color: #3a3a3a;
+    font-size: 14px; border-top: 1px solid #1a1a1a;
+  }
+  .sg-footer-inner {
+    max-width: 1400px; margin: 0 auto;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 32px;
+  }
+  .sg-footer-brand {
+    font-size: 20px; font-weight: 800; color: #1a1a1a; letter-spacing: -0.03em;
+  }
+  .sg-footer-tag { font-size: 13px; color: #5a5a5a; margin-top: 8px; }
+  .sg-footer-cols { display: flex; gap: clamp(24px, 4vw, 48px); flex-wrap: wrap; }
+  .sg-footer-col-title {
+    color: #1a1a1a; margin-bottom: 12px; font-weight: 600;
+  }
+  .sg-footer-bottom {
+    max-width: 1400px; margin: clamp(32px, 4vw, 48px) auto 0;
+    border-top: 1px solid #e8e5df; padding-top: 20px;
+    display: flex; justify-content: space-between;
+    font-size: 12px; flex-wrap: wrap; gap: 12px; color: #5a5a5a;
+  }
+
+  /* ===== Search ===== */
+  .sg-search-section {
+    padding: clamp(24px, 3vw, 40px) clamp(20px, 4vw, 40px) 0;
+    background: #ffffff;
+  }
+  .sg-search-box {
+    position: relative; max-width: 720px; margin: 0 auto;
+  }
+  .sg-search-input {
+    width: 100%; padding: 16px 52px 16px 52px;
+    border: 1px solid #1a1a1a; border-radius: 999px;
+    font-size: 15px; color: #1a1a1a; background: #ffffff;
+    font-family: inherit; transition: background 0.2s ease;
+  }
+  .sg-search-input:focus { outline: none; background: #f7f4ed; }
+  .sg-search-input::placeholder { color: #9a9a9a; }
+  .sg-search-icon {
+    position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+    color: #5a5a5a; pointer-events: none;
+  }
+  .sg-search-clear {
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: #9a9a9a;
+    cursor: pointer; padding: 6px; display: none;
+    font-size: 18px; line-height: 1;
+  }
+  .sg-search-clear.visible { display: block; }
+  .sg-search-results {
+    max-width: 1100px; margin: 24px auto 0;
+    display: none;
+  }
+  .sg-search-results.visible { display: block; }
+  .sg-search-meta {
+    font-size: 13px; color: #5a5a5a; margin-bottom: 14px; font-weight: 500;
+  }
+  .sg-search-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    gap: clamp(12px, 1.5vw, 18px);
+  }
+  .sg-search-item {
+    display: flex; flex-direction: column; gap: 10px; cursor: pointer;
+  }
+  .sg-search-item-shot {
+    aspect-ratio: 1 / 1; background: #f2f2f2; border-radius: 4px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: rgba(0,0,0,0.4);
+  }
+  .sg-search-item-shot img { width: 100%; height: 100%; object-fit: cover; }
+  .sg-search-item-name {
+    font-size: 14px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.3;
+  }
+  .sg-search-item-ing {
+    font-size: 12px; color: #5a5a5a; line-height: 1.5;
+  }
+  .sg-search-item-note {
+    margin-top: 8px; padding-top: 8px;
+    border-top: 1px dashed #e0dcd3;
+    font-size: 12px; color: #3a3a3a; line-height: 1.5;
+  }
+  .sg-search-item-note-label {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.04em; color: #5a3a7a;
+    background: #f1eaf6; padding: 2px 7px; border-radius: 999px;
+    margin-right: 6px; vertical-align: 1px;
+  }
+  .sg-search-empty {
+    text-align: center; padding: 32px 16px;
+    color: #5a5a5a; font-size: 14px;
+  }
+  .sg-chips-wrap {
+    max-width: 1100px; margin: 18px auto 0;
+  }
+  .sg-chips-label {
+    font-size: 12px; font-weight: 500; color: #5a5a5a;
+    letter-spacing: 0.02em; margin-bottom: 10px;
+  }
+  .sg-chips {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .sg-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #f2f2f2; color: #1a1a1a;
+    border: 1px solid transparent; border-radius: 999px;
+    padding: 8px 14px; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease;
+    font-family: inherit;
+  }
+  .sg-chip:hover { background: #e8e5df; }
+  .sg-chip.active { background: #1a1a1a; color: #ffffff; border-color: #1a1a1a; }
+  .sg-chip-count {
+    font-size: 11px; opacity: 0.6; font-weight: 500;
+  }
+  .sg-chip.active .sg-chip-count { opacity: 0.8; }
+  .sg-chip-more {
+    background: transparent; color: #1a1a1a;
+    border: 1px dashed #1a1a1a;
+  }
+  .sg-chip-more:hover { background: #1a1a1a; color: #ffffff; }
+
+  /* ===== Social buttons (Kakao / Instagram) ===== */
+  .sg-socials { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .sg-btn-kakao {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #fee500; color: #1a1a1a; border: none;
+    padding: 14px 22px; font-weight: 600; font-size: 14px;
+    cursor: pointer; border-radius: 999px; text-decoration: none;
+  }
+  .sg-btn-insta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #ffffff; color: #1a1a1a; border: 1px solid #1a1a1a;
+    padding: 14px 22px; font-weight: 600; font-size: 14px;
+    cursor: pointer; border-radius: 999px; text-decoration: none;
+  }
+
+  /* ===== Wanderer animations (9 veggies) ===== */
+  @keyframes sg-w1 { 0%{transform:translate(0,0) rotate(-8deg)} 25%{transform:translate(40px,60px) rotate(12deg)} 50%{transform:translate(20px,140px) rotate(-16deg)} 75%{transform:translate(-10px,80px) rotate(20deg)} 100%{transform:translate(0,0) rotate(-8deg)} }
+  @keyframes sg-w2 { 0%{transform:translate(0,0) rotate(-8deg)} 25%{transform:translate(60px,-30px) rotate(12deg)} 50%{transform:translate(100px,40px) rotate(-16deg)} 75%{transform:translate(30px,70px) rotate(20deg)} 100%{transform:translate(0,0) rotate(-8deg)} }
+  @keyframes sg-w3 { 0%{transform:translate(0,0) rotate(-8deg)} 25%{transform:translate(80px,-40px) rotate(12deg)} 50%{transform:translate(30px,-80px) rotate(-16deg)} 75%{transform:translate(-20px,-30px) rotate(20deg)} 100%{transform:translate(0,0) rotate(-8deg)} }
+  @keyframes sg-w4 { 0%{transform:translate(0,0) rotate(-8deg)} 25%{transform:translate(-60px,40px) rotate(12deg)} 50%{transform:translate(20px,120px) rotate(-16deg)} 75%{transform:translate(80px,60px) rotate(20deg)} 100%{transform:translate(0,0) rotate(-8deg)} }
+  @keyframes sg-w5 { 0%{transform:translate(0,0) rotate(-8deg)} 25%{transform:translate(40px,-80px) rotate(12deg)} 50%{transform:translate(-60px,-40px) rotate(-16deg)} 75%{transform:translate(-30px,60px) rotate(20deg)} 100%{transform:translate(0,0) rotate(-8deg)} }
+  @keyframes sg-w6 { 0%{transform:translate(0,0) rotate(-8deg)} 25%{transform:translate(-60px,80px) rotate(12deg)} 50%{transform:translate(-120px,30px) rotate(-16deg)} 75%{transform:translate(-40px,-20px) rotate(20deg)} 100%{transform:translate(0,0) rotate(-8deg)} }
+  @keyframes sg-w7 { 0%{transform:translate(0,0) rotate(-8deg)} 25%{transform:translate(-40px,-60px) rotate(12deg)} 50%{transform:translate(-80px,20px) rotate(-16deg)} 75%{transform:translate(-20px,80px) rotate(20deg)} 100%{transform:translate(0,0) rotate(-8deg)} }
+  @keyframes sg-w8 { 0%{transform:translate(0,0) rotate(-8deg)} 25%{transform:translate(-100px,-50px) rotate(12deg)} 50%{transform:translate(-60px,-120px) rotate(-16deg)} 75%{transform:translate(30px,-40px) rotate(20deg)} 100%{transform:translate(0,0) rotate(-8deg)} }
+  @keyframes sg-w9 { 0%{transform:translate(0,0) rotate(-8deg)} 25%{transform:translate(80px,40px) rotate(12deg)} 50%{transform:translate(40px,100px) rotate(-16deg)} 75%{transform:translate(-40px,50px) rotate(20deg)} 100%{transform:translate(0,0) rotate(-8deg)} }
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<nav class="sg-nav">
+  <div class="sg-nav-inner">
+    <div class="sg-brand">
+      <span class="sg-brand-dot"></span>
+      슈퍼그리디언츠
+    </div>
+    <div class="sg-nav-links">
+      <a href="#themes">쇼핑</a>
+      <a href="#elementica">엘리멘티카</a>
+    </div>
+    <div class="sg-nav-cta-wrap" style="display:flex; gap:10px; align-items:center;">
+      <button class="sg-nav-cta">Feeling Lucky →</button>
+    </div>
+    <button class="sg-nav-burger" id="sg-burger" aria-label="menu">
+      <span></span><span></span>
+    </button>
+  </div>
+  <div class="sg-nav-mobile" id="sg-nav-mobile">
+    <a href="#categories">쇼핑</a>
+    <a href="#elementica">엘리멘티카</a>
+    <button>Feeling Lucky →</button>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="sg-hero">
+  <div class="sg-hero-wanderers" aria-hidden="true">
+    <!-- Tomato (연보라) -->
+    <div class="sg-wander" style="top:8%; left:3%; animation: sg-w1 3s ease-in-out 0s infinite;">
+      <svg width="58" height="64" viewBox="0 0 80 88"><circle cx="40" cy="52" r="30" fill="#d4c5e8"/><path d="M40 14 L30 22 L22 18 L26 28 L18 34 L28 36 L30 46 L36 40 L44 40 L50 46 L52 36 L62 34 L54 28 L58 18 L50 22 Z" fill="#d4c5e8"/></svg>
+    </div>
+    <!-- Beet (연보라 진) -->
+    <div class="sg-wander" style="top:55%; left:12%; animation: sg-w2 3.7s ease-in-out 0.8s infinite;">
+      <svg width="54" height="65" viewBox="0 0 80 96"><path d="M40 38 C 62 38, 68 52, 62 68 C 56 82, 46 92, 40 92 C 34 92, 24 82, 18 68 C 12 52, 18 38, 40 38 Z" fill="#c5a8d9"/><ellipse cx="30" cy="28" rx="10" ry="16" transform="rotate(-25 30 28)" fill="#c5a8d9"/><ellipse cx="50" cy="28" rx="10" ry="16" transform="rotate(25 50 28)" fill="#c5a8d9"/><ellipse cx="40" cy="20" rx="8" ry="14" fill="#c5a8d9"/></svg>
+    </div>
+    <!-- Onion (연노랑) -->
+    <div class="sg-wander" style="top:75%; left:6%; animation: sg-w3 3.3s ease-in-out 0.4s infinite;">
+      <svg width="48" height="55" viewBox="0 0 80 92"><path d="M40 26 C 62 28, 68 50, 62 70 C 56 84, 48 88, 40 88 C 32 88, 24 84, 18 70 C 12 50, 18 28, 40 26 Z" fill="#fff5a8"/><path d="M40 26 C 38 18, 40 8, 40 2 C 40 8, 42 18, 40 26 Z" fill="#fff5a8"/></svg>
+    </div>
+    <!-- Avocado (연녹) -->
+    <div class="sg-wander" style="top:18%; left:40%; animation: sg-w4 4s ease-in-out 1.4s infinite;">
+      <svg width="56" height="70" viewBox="0 0 80 100"><path d="M40 6 C 54 6, 62 22, 62 42 C 62 70, 54 94, 40 94 C 26 94, 18 70, 18 42 C 18 22, 26 6, 40 6 Z" fill="#b8d4a8"/><circle cx="40" cy="58" r="14" fill="#b8d4a8" opacity="0.45"/></svg>
+    </div>
+    <!-- Banana (노랑) -->
+    <div class="sg-wander" style="top:65%; left:55%; animation: sg-w5 3.5s ease-in-out 1.8s infinite;">
+      <svg width="68" height="52" viewBox="0 0 104 80"><path d="M14 22 C 10 14, 14 8, 22 10 C 28 12, 30 20, 36 32 C 48 52, 68 64, 84 62 C 92 61, 96 66, 92 72 C 86 78, 70 78, 56 74 C 36 68, 20 52, 14 34 C 12 30, 12 26, 14 22 Z" fill="#ffe866"/></svg>
+    </div>
+    <!-- Carrot (연노랑) -->
+    <div class="sg-wander" style="top:12%; left:88%; animation: sg-w6 3.8s ease-in-out 0.2s infinite;">
+      <svg width="56" height="78" viewBox="0 0 80 112"><path d="M40 34 C 52 34, 58 50, 52 76 C 48 94, 44 102, 40 102 C 36 102, 32 94, 28 76 C 22 50, 28 34, 40 34 Z" fill="#fff5a8"/><path d="M40 36 C 36 26, 28 20, 24 14 C 30 16, 36 20, 40 26 C 44 20, 50 16, 56 14 C 52 20, 44 26, 40 36 Z" fill="#fff5a8"/><path d="M40 30 C 38 22, 34 16, 32 8 C 36 12, 39 18, 40 24 C 41 18, 44 12, 48 8 C 46 16, 42 22, 40 30 Z" fill="#fff5a8"/></svg>
+    </div>
+    <!-- Chestnut (진노랑) -->
+    <div class="sg-wander" style="top:60%; left:82%; animation: sg-w7 3.2s ease-in-out 1s infinite;">
+      <svg width="48" height="50" viewBox="0 0 80 84"><path d="M40 6 C 48 20, 68 30, 68 52 C 68 70, 54 80, 40 80 C 26 80, 12 70, 12 52 C 12 30, 32 20, 40 6 Z" fill="#ffe866"/></svg>
+    </div>
+    <!-- Mushroom (연보라 연) -->
+    <div class="sg-wander" style="top:78%; left:93%; animation: sg-w8 4.3s ease-in-out 0.5s infinite;">
+      <svg width="52" height="52" viewBox="0 0 80 80"><path fill-rule="evenodd" d="M10 42 C 10 22, 26 8, 40 8 C 54 8, 70 22, 70 42 C 70 46, 66 48, 60 48 L 20 48 C 14 48, 10 46, 10 42 Z M 30 48 L 30 72 C 30 76, 34 78, 40 78 C 46 78, 50 76, 50 72 L 50 48 Z" fill="#e4d8ea"/></svg>
+    </div>
+    <!-- Lotus (연하늘) -->
+    <div class="sg-wander" style="top:40%; left:70%; animation: sg-w9 3.7s ease-in-out 1.1s infinite;">
+      <svg width="44" height="44" viewBox="0 0 80 80"><path fill-rule="evenodd" d="M40 6 A 34 34 0 1 1 39.99 6 Z M 40 24 A 5 5 0 1 0 40 34 A 5 5 0 1 0 40 24 Z M 26 34 A 5 5 0 1 0 26 44 A 5 5 0 1 0 26 34 Z M 54 34 A 5 5 0 1 0 54 44 A 5 5 0 1 0 54 34 Z M 28 50 A 5 5 0 1 0 28 60 A 5 5 0 1 0 28 50 Z M 52 50 A 5 5 0 1 0 52 60 A 5 5 0 1 0 52 50 Z M 40 42 A 5 5 0 1 0 40 52 A 5 5 0 1 0 40 42 Z" fill="#cfe2ec"/></svg>
+    </div>
+  </div>
+
+  <div class="sg-badge">
+    <span class="sg-badge-dot"></span>
+    제휴·광고 없음
+  </div>
+  <h1 class="sg-h1">
+    원재료까지 다 읽는,<br />
+    <span class="sg-h1-accent">깨끗한 장바구니</span>.
+  </h1>
+  <div class="sg-hero-bottom">
+    <p class="sg-hero-lead">
+      첨가물 없는 먹거리를 직접 찾아 모읍니다.<br />
+      딸 엄마 <b>Sonia</b>가 라벨 뒷면까지 다 읽고, 하나씩 엄선한 리스트예요.
+    </p>
+    <div class="sg-hero-buttons">
+      <button class="sg-btn-primary">제품 둘러보기 →</button>
+      <button class="sg-btn-ghost">Feeling Lucky 🍀</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SEARCH ================= -->
+<section class="sg-search-section">
+  <div class="sg-search-box">
+    <svg class="sg-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input id="sg-search-input" class="sg-search-input" type="text"
+           placeholder="제품명 · 원재료로 검색해 보세요" autocomplete="off" />
+    <button id="sg-search-clear" class="sg-search-clear" aria-label="clear">✕</button>
+  </div>
+  <div class="sg-chips-wrap">
+    <div class="sg-chips-label">카테고리로 바로 보기</div>
+    <div id="sg-chips" class="sg-chips"></div>
+  </div>
+  <div class="sg-chips-wrap">
+    <div class="sg-chips-label">플랫폼으로 보기</div>
+    <div id="sg-platform-chips" class="sg-chips"></div>
+  </div>
+  <div id="sg-search-results" class="sg-search-results">
+    <div id="sg-search-meta" class="sg-search-meta"></div>
+    <div id="sg-search-list" class="sg-search-list"></div>
+  </div>
+</section>
+
+<!-- ================= FEATURED (테마별) ================= -->
+<section id="themes" class="sg-section">
+  <div class="sg-container">
+    <div class="sg-feat-header">
+      <div>
+        <div class="sg-kicker">Shop by theme</div>
+        <h2 class="sg-h2">테마별로 <span class="sg-h2-accent-2">고르기</span></h2>
+      </div>
+      <a class="sg-link-underline">전체 테마 보기 →</a>
+    </div>
+    <div class="sg-themes" id="sg-themes"></div>
+  </div>
+</section>
+
+<!-- ================= MANIFESTO ================= -->
+<section class="sg-section sg-manifesto">
+  <div class="sg-container">
+    <div class="sg-kicker">Our standards</div>
+    <h2 class="sg-h2">제품이 아니라,<br/>원재료를 봅니다.</h2>
+    <div class="sg-manifesto-grid">
+      <div class="sg-manifesto-card">
+        <div class="sg-manifesto-num">01</div>
+        <div class="sg-manifesto-title">라벨 끝까지 확인</div>
+        <p class="sg-manifesto-desc">원재료 한 줄 한 줄까지 다 읽어요. 이해되지 않는 성분이 하나라도 있으면 리스트에 못 올라가요.</p>
+      </div>
+      <div class="sg-manifesto-card">
+        <div class="sg-manifesto-num">02</div>
+        <div class="sg-manifesto-title">원재료부터 확인</div>
+        <p class="sg-manifesto-desc">단일 원료 100%에 가깝고, 불필요한 첨가물이 없는 제품을 우선해요. 라벨이 짧을수록 좋습니다.</p>
+      </div>
+      <div class="sg-manifesto-card">
+        <div class="sg-manifesto-num">03</div>
+        <div class="sg-manifesto-title">제휴·광고 0%</div>
+        <p class="sg-manifesto-desc">어떤 브랜드에서도 돈 받지 않아요. 구매 링크는 여러분 편의를 위한 것일 뿐이에요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ELEMENTICA ================= -->
+<section id="elementica" class="sg-section sg-elementica">
+  <div class="sg-container">
+    <div class="sg-kicker">Sister brand</div>
+    <div class="sg-elem-grid">
+      <div>
+        <h2 class="sg-elem-h2">원재료를 보는 눈은,<br/>피부에도 똑같이.</h2>
+        <p class="sg-elem-lead">
+          합성향 없는 패밀리 코스메틱 <b>엘리멘티카</b>는 슈퍼그리디언츠가 같은 기준으로 엄선한 스킨케어예요.
+        </p>
+        <div class="sg-elem-stats">
+          <div>
+            <div class="sg-elem-stat-num">0</div>
+            <div class="sg-elem-stat-label">합성향</div>
+          </div>
+          <div>
+            <div class="sg-elem-stat-num">0</div>
+            <div class="sg-elem-stat-label">파라벤</div>
+          </div>
+          <div>
+            <div class="sg-elem-stat-num">0</div>
+            <div class="sg-elem-stat-label">미네랄오일</div>
+          </div>
+        </div>
+        <div class="sg-socials">
+          <a class="sg-btn-kakao" href="https://pf.kakao.com/_lxjaxgn" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 3C6.48 3 2 6.58 2 11c0 2.86 1.86 5.37 4.66 6.78l-.93 3.41c-.09.33.27.6.56.42L10.46 19c.5.05 1.02.08 1.54.08 5.52 0 10-3.58 10-8S17.52 3 12 3z"/>
+            </svg>
+            카카오톡으로 런칭 알림 받기
+          </a>
+          <a class="sg-btn-insta" href="https://www.instagram.com/elementica_official/" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+            Instagram
+          </a>
+        </div>
+      </div>
+      <div class="sg-elem-card">
+        <div class="sg-elem-card-meta">Elementica · 001</div>
+        <div class="sg-elem-card-shot">
+          <img src="assets/elementica_s.png" alt="Elementica 전체 라인업"
+               style="width:100%; height:100%; object-fit:contain;" />
+        </div>
+        <div>
+          <div class="sg-elem-card-title">프탈레이트 없는 식물유래향</div>
+          <div class="sg-elem-card-sub">판테놀 라인</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="sg-footer">
+  <div class="sg-footer-inner">
+    <div>
+      <div class="sg-footer-brand">슈퍼그리디언츠</div>
+      <div class="sg-footer-tag">Curated by Sonia</div>
+    </div>
+    <div class="sg-footer-cols">
+      <div>
+        <div class="sg-footer-col-title">쇼핑</div>
+        <div>단백질 반찬</div>
+        <div>순살 생선</div>
+        <div>간식</div>
+      </div>
+      <div>
+        <div class="sg-footer-col-title">브랜드</div>
+        <div>엘리멘티카</div>
+        <div>Feeling Lucky</div>
+      </div>
+      <div>
+        <div class="sg-footer-col-title">Follow</div>
+        <div>Instagram</div>
+        <div>Newsletter</div>
+        <div>Contact</div>
+      </div>
+    </div>
+  </div>
+  <div class="sg-footer-bottom">
+    <span>© 2026 Supergredients. 제휴·광고 없음.</span>
+    <span>협업제안 · <a href="mailto:yeon.vo@gmail.com" style="color:#1a1a1a; border-bottom:1px solid #1a1a1a;">yeon.vo@gmail.com</a></span>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var burger = document.getElementById('sg-burger');
+    var mobile = document.getElementById('sg-nav-mobile');
+    if (burger && mobile) {
+      burger.addEventListener('click', function(){
+        mobile.classList.toggle('open');
+      });
+    }
+  })();
+
+  // 테마별 큐레이션 — 실제 products.json 카테고리 분포에 맞춰 현실적으로 그룹핑
+  var THEMES = [
+    { tag: "#한끼 든든", title: "데워서 바로, 한 그릇 식사", accent: "#1f4458",
+      match: ["국","육수","곰탕","수제비","죽","카레","간편식","덮밥류"],
+      fallbackBg: ["#b8d4e2", "#cfe2ec", "#e4d8ea"] },
+    { tag: "#간식 한 입", title: "원물 그대로, 마음 편한 간식", accent: "#6a5510",
+      match: ["간식","시리얼","시리얼류","빵","떡","팥빙수"],
+      fallbackBg: ["#fff5a8", "#ffe866", "#fff5a8"] },
+    { tag: "#단백질 한 조각", title: "단순한 단백질, 반찬 · 유제품", accent: "#5a3a7a",
+      match: ["반찬","만두","돈까스","베이컨","햄","생선","참치","두부","두류품","콩","치즈","요거트","계란"],
+      fallbackBg: ["#d4c5e8", "#e4d8ea", "#cfe2ec"] },
+  ];
+
+  function esc(s) {
+    return (s == null ? "" : String(s))
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function bestLink(p) {
+    return p.affiliateLink || p.officialLink || "#";
+  }
+
+  var CHIP_TOP_N = 10;
+
+  function renderChips(products) {
+    var host = document.getElementById('sg-chips');
+    if (!host) return;
+    var counts = {};
+    products.forEach(function(p){
+      var c = (p.category || '').trim();
+      if (!c) return;
+      counts[c] = (counts[c] || 0) + 1;
+    });
+    var entries = Object.keys(counts).map(function(k){ return [k, counts[k]]; });
+    entries.sort(function(a, b){ return b[1] - a[1]; });
+
+    function paint(expanded) {
+      var shown = expanded ? entries : entries.slice(0, CHIP_TOP_N);
+      var hidden = entries.length - shown.length;
+      var html = shown.map(function(e){
+        return '<button class="sg-chip" data-cat="' + esc(e[0]) + '">'
+          + esc(e[0]) + '<span class="sg-chip-count">' + e[1] + '</span></button>';
+      }).join('');
+      if (hidden > 0 && !expanded) {
+        html += '<button class="sg-chip sg-chip-more" id="sg-chip-more">+ ' + hidden + '개 더보기</button>';
+      } else if (expanded && entries.length > CHIP_TOP_N) {
+        html += '<button class="sg-chip sg-chip-more" id="sg-chip-more" data-collapse="1">접기</button>';
+      }
+      host.innerHTML = html;
+      wireChips();
+    }
+
+    function wireChips() {
+      host.querySelectorAll('.sg-chip').forEach(function(btn){
+        if (btn.id === 'sg-chip-more') {
+          btn.addEventListener('click', function(){
+            paint(btn.getAttribute('data-collapse') !== '1');
+          });
+          return;
+        }
+        btn.addEventListener('click', function(){
+          var cat = btn.getAttribute('data-cat');
+          var already = btn.classList.contains('active');
+          host.querySelectorAll('.sg-chip').forEach(function(b){ b.classList.remove('active'); });
+          if (already) {
+            filterByCategory(null);
+          } else {
+            btn.classList.add('active');
+            filterByCategory(cat);
+          }
+        });
+      });
+    }
+
+    paint(false);
+  }
+
+  function pickForTheme(products, theme) {
+    var pool = products.filter(function(p){
+      return theme.match.indexOf(p.category) !== -1;
+    });
+    // CLEAN 우선, 그 다음 이미지 있는 것 우선
+    pool.sort(function(a, b) {
+      var ca = a.clean === 'CLEAN' ? 0 : 1;
+      var cb = b.clean === 'CLEAN' ? 0 : 1;
+      if (ca !== cb) return ca - cb;
+      var ia = a.imageUrl ? 0 : 1;
+      var ib = b.imageUrl ? 0 : 1;
+      return ia - ib;
+    });
+    return pool.slice(0, 3);
+  }
+
+  function renderThemes(products) {
+    var host = document.getElementById('sg-themes');
+    if (!host) return;
+    var html = "";
+    THEMES.forEach(function(theme) {
+      var picks = pickForTheme(products, theme);
+      var itemsHtml = "";
+      picks.forEach(function(p, i) {
+        var bg = theme.fallbackBg[i % theme.fallbackBg.length];
+        var shotInner;
+        if (p.imageUrl) {
+          shotInner = '<img src="' + esc(p.imageUrl) + '" alt="' + esc(p.product) + '" loading="lazy" onerror="this.remove();" />';
+        } else {
+          shotInner = '[product shot]';
+        }
+        var badge = p.clean === 'CLEAN' ? '<span class="sg-product-badge">CLEAN</span>' : '';
+        itemsHtml += ''
+          + '<a class="sg-product" href="' + esc(bestLink(p)) + '" target="_blank" rel="noopener noreferrer">'
+          +   '<div class="sg-product-shot" style="background:' + bg + ';">'
+          +     badge
+          +     shotInner
+          +   '</div>'
+          +   '<div>'
+          +     '<div class="sg-product-name">' + esc(p.product) + '</div>'
+          +     '<div class="sg-product-ing">' + esc(p.ingredients) + '</div>'
+          +   '</div>'
+          + '</a>';
+      });
+      html += ''
+        + '<div>'
+        +   '<div class="sg-theme-header">'
+        +     '<span class="sg-theme-tag" style="color:' + theme.accent + ';">' + esc(theme.tag) + '</span>'
+        +     '<h3 class="sg-theme-title">' + esc(theme.title) + '</h3>'
+        +     '<a class="sg-theme-more">모음 보기 →</a>'
+        +   '</div>'
+        +   '<div class="sg-products">' + itemsHtml + '</div>'
+        + '</div>';
+    });
+    host.innerHTML = html;
+  }
+
+  // ===== Search / Category filter =====
+  var ALL_PRODUCTS = [];
+
+  function renderResults(hits, title) {
+    var wrap = document.getElementById('sg-search-results');
+    var meta = document.getElementById('sg-search-meta');
+    var list = document.getElementById('sg-search-list');
+    if (!wrap) return;
+    wrap.classList.add('visible');
+    meta.textContent = (title ? title + ' · ' : '') + hits.length + '개 제품';
+    if (hits.length === 0) {
+      list.innerHTML = '<div class="sg-search-empty">결과가 없어요. 다른 조건으로 시도해 보세요.</div>';
+      return;
+    }
+    var shown = hits.slice(0, 24);
+    list.innerHTML = shown.map(function(p){
+      var shot = p.imageUrl
+        ? '<img src="' + esc(p.imageUrl) + '" alt="' + esc(p.product) + '" loading="lazy" onerror="this.remove();" />'
+        : '[product shot]';
+      var note = (p.note || '').trim();
+      var noteHtml = note
+        ? '<div class="sg-search-item-note"><span class="sg-search-item-note-label">쏘냐 Says</span>' + esc(note) + '</div>'
+        : '';
+      return ''
+        + '<a class="sg-search-item" href="' + esc(bestLink(p)) + '" target="_blank" rel="noopener noreferrer">'
+        +   '<div class="sg-search-item-shot">' + shot + '</div>'
+        +   '<div class="sg-search-item-name">' + esc(p.product) + '</div>'
+        +   '<div class="sg-search-item-ing">' + esc(p.ingredients) + '</div>'
+        +   noteHtml
+        + '</a>';
+    }).join('');
+  }
+
+  function clearResults() {
+    var wrap = document.getElementById('sg-search-results');
+    var list = document.getElementById('sg-search-list');
+    if (wrap) wrap.classList.remove('visible');
+    if (list) list.innerHTML = '';
+  }
+
+  function renderSearch(query) {
+    var clearBtn = document.getElementById('sg-search-clear');
+    var q = (query || '').trim().toLowerCase();
+    if (clearBtn) clearBtn.classList.toggle('visible', q.length > 0);
+    if (!q) { clearResults(); return; }
+    var hits = ALL_PRODUCTS.filter(function(p){
+      return (p.product || '').toLowerCase().indexOf(q) !== -1
+        || (p.ingredients || '').toLowerCase().indexOf(q) !== -1
+        || (p.category || '').toLowerCase().indexOf(q) !== -1;
+    });
+    // 칩 선택 해제 (자유 검색 시)
+    document.querySelectorAll('#sg-chips .sg-chip.active').forEach(function(b){ b.classList.remove('active'); });
+    renderResults(hits, '');
+    scrollToResults();
+  }
+
+  function filterByCategory(cat) {
+    var input = document.getElementById('sg-search-input');
+    var clearBtn = document.getElementById('sg-search-clear');
+    if (input) input.value = '';
+    if (clearBtn) clearBtn.classList.remove('visible');
+    document.querySelectorAll('#sg-platform-chips .sg-chip.active').forEach(function(b){ b.classList.remove('active'); });
+    if (!cat) { clearResults(); return; }
+    var hits = ALL_PRODUCTS.filter(function(p){ return p.category === cat; });
+    renderResults(hits, cat);
+    scrollToResults();
+  }
+
+  function filterByPlatform(plat) {
+    var input = document.getElementById('sg-search-input');
+    var clearBtn = document.getElementById('sg-search-clear');
+    if (input) input.value = '';
+    if (clearBtn) clearBtn.classList.remove('visible');
+    document.querySelectorAll('#sg-chips .sg-chip.active').forEach(function(b){ b.classList.remove('active'); });
+    if (!plat) { clearResults(); return; }
+    var hits = ALL_PRODUCTS.filter(function(p){ return (p.platform || '') === plat; });
+    // 라벨에서 "1. " 같은 접두 제거해 예쁘게
+    var label = plat.replace(/^\s*\d+\.\s*/, '');
+    renderResults(hits, label);
+    scrollToResults();
+  }
+
+  function renderPlatformChips(products) {
+    var host = document.getElementById('sg-platform-chips');
+    if (!host) return;
+    var counts = {};
+    products.forEach(function(p){
+      var v = (p.platform || '').trim();
+      if (!v) return;
+      counts[v] = (counts[v] || 0) + 1;
+    });
+    var entries = Object.keys(counts).map(function(k){ return [k, counts[k]]; });
+    // products.json의 "1. 오아시스" 접두로 자연 정렬됨
+    entries.sort(function(a, b){ return a[0].localeCompare(b[0], 'ko'); });
+    host.innerHTML = entries.map(function(e){
+      var label = e[0].replace(/^\s*\d+\.\s*/, '');
+      return '<button class="sg-chip" data-plat="' + esc(e[0]) + '">'
+        + esc(label) + '<span class="sg-chip-count">' + e[1] + '</span></button>';
+    }).join('');
+    host.querySelectorAll('.sg-chip').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var plat = btn.getAttribute('data-plat');
+        var already = btn.classList.contains('active');
+        host.querySelectorAll('.sg-chip').forEach(function(b){ b.classList.remove('active'); });
+        if (already) {
+          filterByPlatform(null);
+        } else {
+          btn.classList.add('active');
+          filterByPlatform(plat);
+        }
+      });
+    });
+  }
+
+  function scrollToResults() {
+    var wrap = document.getElementById('sg-search-results');
+    if (!wrap) return;
+    setTimeout(function(){
+      var rect = wrap.getBoundingClientRect();
+      if (rect.top < 0 || rect.top > window.innerHeight * 0.6) {
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
+  }
+
+  function wireSearch() {
+    var input = document.getElementById('sg-search-input');
+    var clearBtn = document.getElementById('sg-search-clear');
+    if (input) {
+      input.addEventListener('input', function(e){
+        renderSearch(e.target.value);
+      });
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function(){
+        if (input) { input.value = ''; input.focus(); }
+        renderSearch('');
+      });
+    }
+  }
+
+  fetch('products.json')
+    .then(function(r){ return r.json(); })
+    .then(function(products) {
+      ALL_PRODUCTS = products;
+      renderChips(products);
+      renderPlatformChips(products);
+      renderThemes(products);
+      wireSearch();
+    })
+    .catch(function(err){
+      console.error('products.json load failed:', err);
+    });
+</script>
+</body>
+</html>
