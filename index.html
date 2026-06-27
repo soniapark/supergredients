@@ -244,9 +244,12 @@
     font-size: clamp(15px, 1.6vw, 17px); line-height: 1.9; margin: 0 0 18px;
   }
   .sg-story-body p:last-child { margin-bottom: 0; }
-  .sg-story-note {
-    margin-top: 10px; padding: 14px 16px; border: 1px solid var(--rule);
-    font-size: 12.5px; color: var(--ink-2); line-height: 1.7;
+  .sg-story-quote {
+    margin-top: clamp(20px, 3vw, 32px); padding-top: 18px;
+    border-top: 1.5px solid var(--ink);
+    font-family: var(--type);
+    font-size: clamp(18px, 2.4vw, 28px); letter-spacing: 0.01em;
+    color: var(--ink); line-height: 1.4;
   }
 
   /* ===== Manifesto (흰 배경 + 괘선 그리드) ===== */
@@ -444,7 +447,7 @@
     <div class="sg-nav-links">
       <a href="#themes">전시</a>
       <a href="#story">이야기</a>
-      <a href="#standards">소장 기준</a>
+      <a href="#standards">아카이브 기준</a>
       <a href="#elementica">엘리멘티카</a>
     </div>
     <button class="sg-nav-burger" id="sg-burger" aria-label="menu">
@@ -454,7 +457,7 @@
   <div class="sg-nav-mobile" id="sg-nav-mobile">
     <a href="#themes">전시</a>
     <a href="#story">이야기</a>
-    <a href="#standards">소장 기준</a>
+    <a href="#standards">아카이브 기준</a>
     <a href="#elementica">엘리멘티카</a>
   </div>
 </nav>
@@ -471,7 +474,7 @@
 
   <div class="sg-stamp">
     <span class="sg-stamp-dot"></span>
-    No Affiliate Links · 플랫폼 제휴링크 없음
+    No Affiliate Links · 브랜드·플랫폼 수익 없음
   </div>
   <h1 class="sg-h1">
     원재료까지 다 읽는,<br />
@@ -480,10 +483,10 @@
   <div class="sg-hero-bottom">
     <p class="sg-hero-lead">
       첨가물 없는 먹거리를 직접 찾아 모읍니다.<br />
-      딸 엄마 <b>Sonia</b>가 라벨 뒷면까지 다 읽고, 하나씩 엄선한 소장 목록이에요.
+      딸 엄마 <b>Sonia</b>가 라벨 뒷면까지 다 읽고, 하나씩 엄선한 아카이브예요.
     </p>
     <div class="sg-hero-buttons">
-      <button class="sg-btn-primary" data-action="browse-all">소장품 둘러보기 →</button>
+      <button class="sg-btn-primary" data-action="browse-all">아카이브 둘러보기 →</button>
       <button class="sg-btn-ghost" data-action="lucky">무작위 한 점 🍀</button>
     </div>
   </div>
@@ -497,16 +500,16 @@
         <div class="sg-kicker">Galleries · 전시실</div>
         <h2 class="sg-h2">테마별로 고르기</h2>
       </div>
-      <a class="sg-link-underline" data-action="browse-all" style="cursor:pointer;">전체 소장품 →</a>
+      <a class="sg-link-underline" data-action="browse-all" style="cursor:pointer;">전체 아카이브 →</a>
     </div>
     <div class="sg-themes" id="sg-themes"></div>
   </div>
 </section>
 
-<!-- ================= SEARCH / 전체 소장품 ================= -->
+<!-- ================= SEARCH / 전체 아카이브 ================= -->
 <section class="sg-search-section">
   <div class="sg-search-head">
-    <div class="sg-label">소장품 검색 · Search the Archive</div>
+    <div class="sg-label">아카이브 검색 · Search the Archive</div>
   </div>
   <div class="sg-search-box">
     <svg class="sg-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -535,13 +538,13 @@
 <section id="story" class="sg-section sg-story">
   <div class="sg-container">
     <div class="sg-kicker">Why · 왜 모으기 시작했나</div>
-    <h2 class="sg-h2">2025년 5월,<br/>장바구니에서 시작됐어요.</h2>
+    <h2 class="sg-h2">2025년 1월,<br/>장바구니에서 시작됐어요.</h2>
     <div class="sg-story-body">
       <p>가정을 돌보는 일의 많은 부분은 장보기예요. 그리고 그 장보기의 한 축은, 첨가물 없는 먹거리를 고르는 일이고요.</p>
       <p>원물이라면 고민이 없지만, 가공식품은 다릅니다. 라벨 뒤를 보면 이름도 낯선 첨가물이 줄줄이 적혀 있을 때가 많아요. 한창 자라는 아이에게는, 굳이 더하고 싶지 않은 것들이었습니다.</p>
       <p>피부에 닿는 것만큼이나 — 어쩌면 그보다 더 — 몸 안으로 들어가는 것이 중요하다고 느꼈어요. 그래서 첨가물이 아주 적거나 아예 없는 제품을 하나씩 찾아 모으기 시작했습니다.</p>
       <p>아이 간식, 냉동 반찬처럼 손이 많이 가는 것들부터. 가사의 수고를 조금이라도 덜어줄 수 있는 제품을 고민하면서요.</p>
-      <p class="sg-story-note">※ 식품첨가물과 아이의 성장·발달 사이의 관계는 아직 연구가 진행 중인 영역입니다. 단정하기보다, “피할 수 있다면 피하자”는 마음으로 고릅니다.</p>
+      <p class="sg-story-quote">You are what you eat.</p>
     </div>
   </div>
 </section>
@@ -555,7 +558,7 @@
       <div class="sg-manifesto-card">
         <div class="sg-manifesto-num">01</div>
         <div class="sg-manifesto-title">라벨 끝까지 확인</div>
-        <p class="sg-manifesto-desc">원재료 한 줄 한 줄까지 다 읽어요. 이해되지 않는 성분이 하나라도 있으면 소장 목록에 못 올라가요.</p>
+        <p class="sg-manifesto-desc">원재료 한 줄 한 줄까지 다 읽어요. 이해되지 않는 성분이 하나라도 있으면 아카이브에 못 올라가요.</p>
       </div>
       <div class="sg-manifesto-card">
         <div class="sg-manifesto-num">02</div>
@@ -564,8 +567,8 @@
       </div>
       <div class="sg-manifesto-card">
         <div class="sg-manifesto-num">03</div>
-        <div class="sg-manifesto-title">플랫폼 제휴링크 없음</div>
-        <p class="sg-manifesto-desc">어떤 브랜드에서도 돈 받지 않아요. 구매 링크는 여러분 편의를 위한 것일 뿐이에요.</p>
+        <div class="sg-manifesto-title">브랜드·플랫폼 수익 없음</div>
+        <p class="sg-manifesto-desc">엘리멘티카는, 성분을 따지는 엄마라면 먹는 것도 똑같이 신경 쓴다는 걸 압니다. 그래서 직접 찾아 모았어요. 어떤 브랜드나 플랫폼에서도 수익을 받지 않으며, 구매 링크는 오직 여러분의 편의를 위한 것입니다.</p>
       </div>
     </div>
   </div>
@@ -885,9 +888,9 @@
     if (url) window.open(url, '_blank', 'noopener,noreferrer');
   }
 
-  // 전체 소장품을 기본으로 깔아두는 브라우즈-우선 뷰 (스크롤 이동 없음)
+  // 전체 아카이브을 기본으로 깔아두는 브라우즈-우선 뷰 (스크롤 이동 없음)
   function showAll() {
-    renderResults(ALL_PRODUCTS.slice(), '전체 소장품');
+    renderResults(ALL_PRODUCTS.slice(), '전체 아카이브');
   }
 
   function browseAll() {
@@ -968,7 +971,7 @@
       renderThemes(products);
       wireSearch();
       wireActions();
-      showAll();   // 로드 즉시 전체 소장품을 깔아 한 눈에 브라우징
+      showAll();   // 로드 즉시 전체 아카이브을 깔아 한 눈에 브라우징
     })
     .catch(function(err){
       console.error('products.json load failed:', err);
