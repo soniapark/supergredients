@@ -344,6 +344,23 @@
   }
   .sg-footer-bottom a { color: var(--ink); box-shadow: inset 0 -1px 0 var(--ink); }
 
+  /* ===== Tabs (전체 아카이브 / 테마별) ===== */
+  .sg-tabs {
+    display: flex; gap: 0;
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: clamp(24px, 3vw, 36px);
+  }
+  .sg-tab {
+    background: transparent; border: none; cursor: pointer;
+    font-family: var(--type);
+    font-size: clamp(13px, 1.7vw, 16px); letter-spacing: 0.04em;
+    padding: 12px 22px 14px; color: var(--ink-2);
+    box-shadow: inset 0 -2px 0 transparent; transition: color 0.15s, box-shadow 0.15s;
+  }
+  .sg-tab:hover { color: var(--ink); }
+  .sg-tab.active { color: var(--ink); box-shadow: inset 0 -2px 0 var(--ink); }
+  .sg-tab-panel[hidden] { display: none; }
+
   /* ===== Search ===== */
   .sg-search-section {
     padding: clamp(28px, 4vw, 48px) clamp(18px, 4vw, 44px) 0; background: var(--paper);
@@ -445,7 +462,7 @@
       <span>슈퍼그리디언츠 <span class="sg-brand-sub">· ARCHIVE</span></span>
     </a>
     <div class="sg-nav-links">
-      <a href="#themes">전시</a>
+      <a data-action="tab-themes" style="cursor:pointer;">전시</a>
       <a href="#story">이야기</a>
       <a href="#standards">아카이브 기준</a>
       <a href="#elementica">엘리멘티카</a>
@@ -455,7 +472,7 @@
     </button>
   </div>
   <div class="sg-nav-mobile" id="sg-nav-mobile">
-    <a href="#themes">전시</a>
+    <a data-action="tab-themes" style="cursor:pointer;">전시</a>
     <a href="#story">이야기</a>
     <a href="#standards">아카이브 기준</a>
     <a href="#elementica">엘리멘티카</a>
@@ -492,49 +509,7 @@
   </div>
 </section>
 
-<!-- ================= FEATURED (테마별) ================= -->
-<section id="themes" class="sg-section">
-  <div class="sg-container">
-    <div class="sg-feat-header">
-      <div>
-        <div class="sg-kicker">Galleries · 전시실</div>
-        <h2 class="sg-h2">테마별로 고르기</h2>
-      </div>
-      <a class="sg-link-underline" data-action="browse-all" style="cursor:pointer;">전체 아카이브 →</a>
-    </div>
-    <div class="sg-themes" id="sg-themes"></div>
-  </div>
-</section>
-
-<!-- ================= SEARCH / 전체 아카이브 ================= -->
-<section class="sg-search-section">
-  <div class="sg-search-head">
-    <div class="sg-label">아카이브 검색 · Search the Archive</div>
-  </div>
-  <div class="sg-search-box">
-    <svg class="sg-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"/>
-      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    </svg>
-    <input id="sg-search-input" class="sg-search-input" type="text"
-           placeholder="제품명 · 원재료로 검색해 보세요" autocomplete="off" />
-    <button id="sg-search-clear" class="sg-search-clear" aria-label="clear">✕</button>
-  </div>
-  <div class="sg-chips-wrap">
-    <div class="sg-chips-label">플랫폼으로 보기</div>
-    <div id="sg-platform-chips" class="sg-chips"></div>
-  </div>
-  <div class="sg-chips-wrap">
-    <div class="sg-chips-label">카테고리로 바로 보기</div>
-    <div id="sg-chips" class="sg-chips"></div>
-  </div>
-  <div id="sg-search-results" class="sg-search-results">
-    <div id="sg-search-meta" class="sg-search-meta"></div>
-    <div id="sg-search-list" class="sg-search-list"></div>
-  </div>
-</section>
-
-<!-- ================= STORY (왜 시작했나) ================= -->
+<!-- ================= STORY (왜 시작했나) — 맨 위 ================= -->
 <section id="story" class="sg-section sg-story">
   <div class="sg-container">
     <div class="sg-kicker">Why · 왜 모으기 시작했나</div>
@@ -549,10 +524,52 @@
   </div>
 </section>
 
+<!-- ================= TABS: 전체 아카이브 / 테마별 ================= -->
+<section id="browse" class="sg-section sg-tabs-section">
+  <div class="sg-container">
+    <div class="sg-tabs" role="tablist">
+      <button class="sg-tab active" type="button" data-tab="archive">전체 아카이브</button>
+      <button class="sg-tab" type="button" data-tab="themes">테마별로 고르기</button>
+    </div>
+  </div>
+
+  <!-- 전체 아카이브 패널 -->
+  <div class="sg-tab-panel" data-tab="archive">
+    <div class="sg-search-box">
+      <svg class="sg-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="sg-search-input" class="sg-search-input" type="text"
+             placeholder="제품명 · 원재료로 검색해 보세요" autocomplete="off" />
+      <button id="sg-search-clear" class="sg-search-clear" aria-label="clear">✕</button>
+    </div>
+    <div class="sg-chips-wrap">
+      <div class="sg-chips-label">플랫폼으로 보기</div>
+      <div id="sg-platform-chips" class="sg-chips"></div>
+    </div>
+    <div class="sg-chips-wrap">
+      <div class="sg-chips-label">카테고리로 바로 보기</div>
+      <div id="sg-chips" class="sg-chips"></div>
+    </div>
+    <div id="sg-search-results" class="sg-search-results">
+      <div id="sg-search-meta" class="sg-search-meta"></div>
+      <div id="sg-search-list" class="sg-search-list"></div>
+    </div>
+  </div>
+
+  <!-- 테마별 패널 -->
+  <div class="sg-tab-panel" data-tab="themes" hidden>
+    <div class="sg-container">
+      <div class="sg-themes" id="sg-themes"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= MANIFESTO ================= -->
 <section id="standards" class="sg-section sg-manifesto">
   <div class="sg-container">
-    <div class="sg-kicker">Acquisition Standards · 소장 기준</div>
+    <div class="sg-kicker">Acquisition Standards · 아카이브 기준</div>
     <h2 class="sg-h2">제품이 아니라,<br/>원재료를 봅니다.</h2>
     <div class="sg-manifesto-grid">
       <div class="sg-manifesto-card">
@@ -591,12 +608,8 @@
   <div class="sg-footer-inner">
     <div>
       <div class="sg-footer-brand">슈퍼그리디언츠</div>
-      <div class="sg-footer-tag">Curated by Sonia · Clean Food Archive</div>
+      <div class="sg-footer-tag">Clean Food Archive</div>
     </div>
-  </div>
-  <div class="sg-footer-bottom">
-    <span>© 2026 Supergredients</span>
-    <span>협업제안 · <a href="mailto:yeon.vo@gmail.com">yeon.vo@gmail.com</a></span>
   </div>
 </footer>
 
@@ -675,19 +688,19 @@
 
   // ===== 텍스트 명세 카드 마크업 (공용) =====
   function cardMarkup(p, outerClass) {
-    var badge = p.clean === 'CLEAN' ? '<span class="sg-card-badge">CLEAN</span>' : '';
     var head  = esc(p.category || getMainCategory(p.category));
     var note  = (p.note || '').trim();
     var noteHtml = note
       ? '<div class="sg-card-note"><span class="sg-card-note-label">Why</span>' + esc(note) + '</div>'
       : '';
-    var metaParts = [getPlatformName(p.platform), p.producer, p.origin].filter(Boolean);
+    // 제조원·유통사(플랫폼) 이름은 카드에 노출하지 않음 (원산지만)
+    var metaParts = [p.origin].filter(Boolean);
     var metaHtml = metaParts.length
       ? '<div class="sg-card-meta">' + esc(metaParts.join('  ·  ')) + '</div>'
       : '';
     return ''
       + '<a class="' + outerClass + '" href="' + esc(bestLink(p)) + '" target="_blank" rel="noopener noreferrer">'
-      +   '<div class="sg-card-head"><span>' + head + '</span>' + badge + '</div>'
+      +   '<div class="sg-card-head"><span>' + head + '</span></div>'
       +   '<div class="sg-card-name">' + esc(p.product) + '</div>'
       +   '<div class="sg-card-ing">' + esc(p.ingredients) + '</div>'
       +   noteHtml
@@ -888,12 +901,38 @@
     if (url) window.open(url, '_blank', 'noopener,noreferrer');
   }
 
-  // 전체 아카이브을 기본으로 깔아두는 브라우즈-우선 뷰 (스크롤 이동 없음)
+  // Fisher–Yates 셔플 (새로고침마다 랜덤 순서)
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // 전체 아카이브를 기본으로 깔아두는 브라우즈 뷰 (랜덤 순서, 스크롤 이동 없음)
   function showAll() {
-    renderResults(ALL_PRODUCTS.slice(), '전체 아카이브');
+    renderResults(shuffle(ALL_PRODUCTS), '전체 아카이브');
+  }
+
+  // ===== 탭 (전체 아카이브 / 테마별) =====
+  function switchTab(name) {
+    document.querySelectorAll('.sg-tab').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-tab') === name);
+    });
+    document.querySelectorAll('.sg-tab-panel').forEach(function(p){
+      p.hidden = (p.getAttribute('data-tab') !== name);
+    });
+  }
+  function wireTabs() {
+    document.querySelectorAll('.sg-tab').forEach(function(btn){
+      btn.addEventListener('click', function(){ switchTab(btn.getAttribute('data-tab')); });
+    });
   }
 
   function browseAll() {
+    switchTab('archive');
     activeFilters.category = [];
     activeFilters.platform = [];
     ['#sg-chips', '#sg-platform-chips'].forEach(function(sel){
@@ -907,13 +946,14 @@
     var clearBtn = document.getElementById('sg-search-clear');
     if (input) input.value = '';
     if (clearBtn) clearBtn.classList.remove('visible');
-    renderResults(ALL_PRODUCTS.slice(), '전체');
+    renderResults(shuffle(ALL_PRODUCTS), '전체 아카이브');
     scrollToResults();
   }
 
   function showTheme(index) {
     var theme = THEMES[index];
     if (!theme) return;
+    switchTab('archive');
     activeFilters.category = [];
     activeFilters.platform = [];
     ['#sg-chips', '#sg-platform-chips'].forEach(function(sel){
@@ -940,6 +980,11 @@
       else if (act === 'theme') {
         var idx = parseInt(btn.getAttribute('data-theme-index'), 10);
         if (!isNaN(idx)) showTheme(idx);
+      }
+      else if (act === 'tab-themes') {
+        switchTab('themes');
+        var b = document.getElementById('browse');
+        if (b) b.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
       else if (act === 'scroll-top') {
         e.preventDefault();
@@ -971,7 +1016,8 @@
       renderThemes(products);
       wireSearch();
       wireActions();
-      showAll();   // 로드 즉시 전체 아카이브을 깔아 한 눈에 브라우징
+      wireTabs();
+      showAll();   // 로드 즉시 전체 아카이브를 랜덤 순서로 깔기
     })
     .catch(function(err){
       console.error('products.json load failed:', err);
